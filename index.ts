@@ -7,26 +7,28 @@ import { parseArgs } from 'node:util'
 
 import prompts from 'prompts'
 import { red, green, cyan, bold } from 'kleur/colors'
+import {stdout} from "node:process"
 
 import ejs from 'ejs'
 
-import * as banners from './utils/banners'
+import * as banners from './utils/banners.ts'
 
-import renderTemplate from './utils/renderTemplate'
-import { postOrderDirectoryTraverse, preOrderDirectoryTraverse } from './utils/directoryTraverse'
-import generateReadme from './utils/generateReadme'
-import getCommand from './utils/getCommand'
-import getLanguage from './utils/getLanguage'
-import renderEslint from './utils/renderEslint'
-import { trimBoilerplate, removeCSSImport, emptyRouterConfig } from './utils/trimBoilerplate'
+import renderTemplate from './utils/renderTemplate.ts'
+import type { TemplateCallback } from './utils/renderTemplate.ts'
+import { postOrderDirectoryTraverse, preOrderDirectoryTraverse } from './utils/directoryTraverse.ts'
+import generateReadme from './utils/generateReadme.ts'
+import getCommand from './utils/getCommand.ts'
+import getLanguage from './utils/getLanguage.ts'
+import renderEslint from './utils/renderEslint.ts'
+import { trimBoilerplate, removeCSSImport, emptyRouterConfig } from './utils/trimBoilerplate.ts'
 
-import cliPackageJson from './package.json'
+import cliPackageJson from './deno.json' with { type: "json" }
 
-function isValidPackageName(projectName) {
+function isValidPackageName(projectName:string) {
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
 }
 
-function toValidPackageName(projectName) {
+function toValidPackageName(projectName:string) {
   return projectName
     .trim()
     .toLowerCase()
@@ -51,15 +53,15 @@ function canSkipEmptying(dir: string) {
   return false
 }
 
-function emptyDir(dir) {
+function emptyDir(dir:string) {
   if (!fs.existsSync(dir)) {
     return
   }
 
   postOrderDirectoryTraverse(
     dir,
-    (dir) => fs.rmdirSync(dir),
-    (file) => fs.unlinkSync(file),
+    (dir:string) => fs.rmdirSync(dir),
+    (file:string) => fs.unlinkSync(file),
   )
 }
 
@@ -112,8 +114,8 @@ Unstable feature flags:
 `
 
 async function init() {
-  const cwd = process.cwd()
-  const args = process.argv.slice(2)
+  const cwd = Deno.cwd()
+  const args = Deno.args.slice(2)
 
   // alias is not supported by parseArgs
   const options = {
@@ -133,12 +135,12 @@ async function init() {
 
   if (argv.help) {
     console.log(helpMessage)
-    process.exit(0)
+    Deno.exit(0)
   }
 
   if (argv.version) {
     console.log(`${cliPackageJson.name} v${cliPackageJson.version}`)
-    process.exit(0)
+    Deno.exit(0)
   }
 
   // if any of the feature flags is set, we would skip the feature prompts
@@ -163,8 +165,8 @@ async function init() {
 
   const forceOverwrite = argv.force
 
-  const language = getLanguage()
-
+  const language = await getLanguage()
+  // console.log('WTH is this', language)
   let result: {
     projectName?: string
     shouldOverwrite?: boolean
@@ -182,12 +184,12 @@ async function init() {
 
   console.log()
   console.log(
-    process.stdout.isTTY && process.stdout.getColorDepth() > 8
+    Deno.stdout.isTerminal()
       ? banners.gradientBanner
       : banners.defaultBanner,
   )
   console.log()
-
+  // console.log(language)
   try {
     // Prompts:
     // - Project name:
@@ -209,7 +211,7 @@ async function init() {
           type: targetDir ? null : 'text',
           message: language.projectName.message,
           initial: defaultProjectName,
-          onState: (state) => (targetDir = String(state.value).trim() || defaultProjectName),
+          onState: (state: { value: string }) => (targetDir = String(state.value).trim() || defaultProjectName),
         },
         {
           name: 'shouldOverwrite',
@@ -228,7 +230,7 @@ async function init() {
         },
         {
           name: 'overwriteChecker',
-          type: (prev, values) => {
+          type: (prev: any, values: any) => {
             if (values.shouldOverwrite === false) {
               throw new Error(red('✖') + ` ${language.errors.operationCancelled}`)
             }
@@ -240,7 +242,7 @@ async function init() {
           type: () => (isValidPackageName(targetDir) ? null : 'text'),
           message: language.packageName.message,
           initial: () => toValidPackageName(targetDir),
-          validate: (dir) => isValidPackageName(dir) || language.packageName.invalidMessage,
+          validate: (dir: string) => isValidPackageName(dir) || language.packageName.invalidMessage,
         },
         {
           name: 'needsTypeScript',
@@ -288,7 +290,7 @@ async function init() {
           hint: language.needsE2eTesting.hint,
           message: language.needsE2eTesting.message,
           initial: 0,
-          choices: (prev, answers) => [
+          choices: (prev: any, answers: any) => [
             {
               title: language.needsE2eTesting.selectOptions.negative.title,
               value: false,
@@ -335,7 +337,7 @@ async function init() {
         },
         {
           name: 'needsPrettier',
-          type: (prev, values) => {
+          type: (prev: any, values: any) => {
             if (isFeatureFlagsUsed || !values.needsEslint) {
               return null
             }
@@ -353,9 +355,10 @@ async function init() {
         },
       },
     )
-  } catch (cancelled) {
-    console.log(cancelled.message)
-    process.exit(1)
+  } catch (cancelled: unknown) {
+    const cancelledMessage = cancelled instanceof Error ? cancelled.message : String(cancelled)
+    console.log(cancelledMessage)
+    Deno.exit(1)
   }
 
   // `initial` won't take effect if the prompt type is null
@@ -363,24 +366,24 @@ async function init() {
   const {
     projectName,
     packageName = projectName ?? defaultProjectName,
-    shouldOverwrite = argv.force,
-    needsJsx = argv.jsx,
-    needsTypeScript = (argv.ts || argv.typescript) as boolean,
-    needsRouter = (argv.router || argv['vue-router']) as boolean,
-    needsPinia = argv.pinia,
-    needsVitest = argv.vitest || argv.tests,
-    needsPrettier = argv['eslint-with-prettier'],
+    shouldOverwrite = argv.force ?? false,
+    needsJsx = Boolean(argv.jsx),
+    needsTypeScript = Boolean(argv.ts || argv.typescript),
+    needsRouter = Boolean(argv.router || argv['vue-router']),
+    needsPinia = Boolean(argv.pinia),
+    needsVitest = Boolean(argv.vitest || argv.tests),
+    needsPrettier = Boolean(argv['eslint-with-prettier']),
   } = result
 
   const needsEslint = Boolean(argv.eslint || argv['eslint-with-prettier'] || result.needsEslint)
   const needsOxlint = result.needsEslint === 'speedUpWithOxlint'
 
   const { needsE2eTesting } = result
-  const needsCypress = argv.cypress || argv.tests || needsE2eTesting === 'cypress'
-  const needsCypressCT = needsCypress && !needsVitest
-  const needsNightwatch = argv.nightwatch || needsE2eTesting === 'nightwatch'
-  const needsNightwatchCT = needsNightwatch && !needsVitest
-  const needsPlaywright = argv.playwright || needsE2eTesting === 'playwright'
+  const needsCypress = Boolean(argv.cypress || argv.tests || needsE2eTesting === 'cypress')
+  const needsCypressCT = Boolean(needsCypress && !needsVitest)
+  const needsNightwatch = Boolean(argv.nightwatch || needsE2eTesting === 'nightwatch')
+  const needsNightwatchCT = Boolean(needsNightwatch && !needsVitest)
+  const needsPlaywright = Boolean(argv.playwright || needsE2eTesting === 'playwright')
 
   const root = path.join(cwd, targetDir)
 
@@ -393,15 +396,15 @@ async function init() {
   console.log(`\n${language.infos.scaffolding} ${root}...`)
 
   const pkg = { name: packageName, version: '0.0.0' }
-  fs.writeFileSync(path.resolve(root, 'package.json'), JSON.stringify(pkg, null, 2))
+  fs.writeFileSync(path.resolve(root, 'deno.json'), JSON.stringify(pkg, null, 2))
 
   // todo:
   // work around the esbuild issue that `import.meta.url` cannot be correctly transpiled
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
-  const templateRoot = path.resolve(__dirname, 'template')
-  const callbacks = []
-  const render = function render(templateName) {
+  const templateRoot = path.resolve(import.meta.dirname ?? Deno.cwd(), 'template')
+  const callbacks: TemplateCallback[] = []
+  const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)
     renderTemplate(templateDir, root, callbacks)
   }
@@ -538,7 +541,8 @@ async function init() {
   }
 
   // An external data store for callbacks to share data
-  const dataStore = {}
+  // deno-lint-ignore no-explicit-any
+  const dataStore: Record<string, any> = {}
   // Process callbacks
   for (const cb of callbacks) {
     await cb(dataStore)
@@ -548,7 +552,7 @@ async function init() {
   preOrderDirectoryTraverse(
     root,
     () => {},
-    (filepath) => {
+    (filepath: string) => {
       if (filepath.endsWith('.ejs')) {
         const template = fs.readFileSync(filepath, 'utf-8')
         const dest = filepath.replace(/\.ejs$/, '')
@@ -596,7 +600,7 @@ async function init() {
     preOrderDirectoryTraverse(
       root,
       () => {},
-      (filepath) => {
+      (filepath: string) => {
         if (filepath.endsWith('.js') && !filepath.endsWith('eslint.config.js')) {
           const tsFilePath = filepath.replace(/\.js$/, '.ts')
           if (fs.existsSync(tsFilePath)) {
@@ -619,7 +623,7 @@ async function init() {
     preOrderDirectoryTraverse(
       root,
       () => {},
-      (filepath) => {
+      (filepath: string) => {
         if (filepath.endsWith('.ts')) {
           fs.unlinkSync(filepath)
         }
@@ -636,14 +640,17 @@ async function init() {
 
   // Instructions:
   // Supported package managers: pnpm > yarn > bun > npm
-  const userAgent = process.env.npm_config_user_agent ?? ''
-  const packageManager = /pnpm/.test(userAgent)
-    ? 'pnpm'
-    : /yarn/.test(userAgent)
-      ? 'yarn'
-      : /bun/.test(userAgent)
-        ? 'bun'
-        : 'npm'
+  const userAgent = Deno.env.get('npm_config_user_agent') ?? ''
+  const packageManager = 'deno'
+
+  //TODO: add pnpm, yarn, bun support
+  // /pnpm/.test(userAgent)
+  //   ? 'pnpm'
+  //   : /yarn/.test(userAgent)
+  //     ? 'yarn'
+  //     : /bun/.test(userAgent)
+  //       ? 'bun'
+  //       : 'npm'
 
   // README generation
   fs.writeFileSync(
@@ -669,11 +676,11 @@ async function init() {
       `  ${bold(green(`cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName}`))}`,
     )
   }
-  console.log(`  ${bold(green(getCommand(packageManager, 'install')))}`)
+  console.log(`  ${bold(green(getCommand(packageManager, 'install --allow-scripts' )))}`)
   if (needsPrettier) {
     console.log(`  ${bold(green(getCommand(packageManager, 'format')))}`)
   }
-  console.log(`  ${bold(green(getCommand(packageManager, 'dev')))}`)
+  console.log(`  ${bold(green(getCommand(packageManager, 'dev')))}`)  
   console.log()
 }
 

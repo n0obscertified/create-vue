@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "pinia":"npm:pinia@^2.3.0",
+    "vue":"npm:vue@^3.5.13"
+  }
+}

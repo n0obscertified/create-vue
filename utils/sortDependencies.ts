@@ -1,22 +1,28 @@
-export default function sortDependencies(packageJson) {
-  const sorted = {}
+interface DenoJson {
+  nodeModulesDir?: "auto" | boolean;
+  name?: string;
+  exports?: string;
+  version?: string;
+  license?: string;
+  imports?: Record<string, string>;
+  compilerOptions?: Record<string, unknown>;
+  unstable?: string[];
+}
 
-  const depTypes = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
-
-  for (const depType of depTypes) {
-    if (packageJson[depType]) {
-      sorted[depType] = {}
-
-      Object.keys(packageJson[depType])
-        .sort()
-        .forEach((name) => {
-          sorted[depType][name] = packageJson[depType][name]
-        })
-    }
+export default function sortDependencies(denoJson: DenoJson): DenoJson {
+  const sorted: Partial<DenoJson> = {}
+  
+  if (denoJson.imports) {
+    sorted.imports = {}
+    Object.keys(denoJson.imports)
+      .sort()
+      .forEach((name) => {
+        sorted.imports![name] = denoJson.imports![name]
+      })
   }
 
   return {
-    ...packageJson,
+    ...denoJson,
     ...sorted,
   }
 }

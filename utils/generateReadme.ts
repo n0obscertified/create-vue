@@ -1,4 +1,4 @@
-import getCommand from './getCommand'
+import getCommand from './getCommand.ts'
 
 const sfcTypeSupportDoc = [
   '',
@@ -7,6 +7,19 @@ const sfcTypeSupportDoc = [
   'TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.',
   '',
 ].join('\n')
+
+interface ReadmeOptions {
+  projectName: string
+  packageManager: string
+  needsTypeScript: boolean
+  needsCypress: boolean
+  needsNightwatch: boolean
+  needsCypressCT: boolean
+  needsNightwatchCT: boolean
+  needsPlaywright: boolean
+  needsVitest: boolean
+  needsEslint: boolean
+}
 
 export default function generateReadme({
   projectName,
@@ -19,7 +32,7 @@ export default function generateReadme({
   needsPlaywright,
   needsVitest,
   needsEslint,
-}) {
+}: ReadmeOptions) {
   const commandFor = (scriptName: string, args?: string) =>
     getCommand(packageManager, scriptName, args)
 

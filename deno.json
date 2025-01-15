@@ -1,0 +1,29 @@
+{
+    "nodeModulesDir":"auto",
+    "name": "@denovue/create-vue",
+    "exports":"./index.ts",
+    "version": "0.2.1",
+    "license": "MIT",
+    "imports": {
+        "@tsconfig/node22": "npm:@tsconfig/node22@^22.0.0",
+        "@types/eslint": "npm:@types/eslint@^9.6.1",
+        "@types/node": "npm:@types/node@^22.10.5",
+        "@types/prompts": "npm:@types/prompts@^2.4.9",
+        "@vue/create-eslint-config": "npm:@vue/create-eslint-config@^0.6.1",
+        "@vue/tsconfig": "npm:@vue/tsconfig@^0.7.0",
+        "ejs": "npm:ejs@^3.1.10",
+        "esbuild": "npm:esbuild@^0.24.2",
+        "esbuild-plugin-license": "npm:esbuild-plugin-license@^1.2.3",
+        "husky": "npm:husky@^9.1.7",
+        "kleur": "npm:kleur@^4.1.5",
+        "lint-staged": "npm:lint-staged@^15.3.0",
+        "prettier": "npm:prettier@^3.4.2",
+        "prompts": "npm:prompts@^2.4.2",
+        "vitest": "npm:vitest@^2.1.8",
+        "zx": "npm:zx@^8.3.0"
+    },
+    "compilerOptions": {},
+    "unstable": [
+      "sloppy-imports"
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "type": "module",
+    "nodeModulesDir":"auto",
+    "tasks":{
+        "dev":"vite",
+        "build":"vite build",
+        "preview":"vite preview",
+        "install":"install --allow-scripts"
+    },
+    "imports":{
+        "vite": "npm:vite@^6.0.7",
+        "vite-plugin-vuetify": "npm:vite-plugin-vuetify@^2.0.4",
+        "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@^5.2.1",
+        "vite-plugin-node-polyfills": "npm:vite-plugin-node-polyfills@^0.22.0",
+        "vue": "npm:vue@^3.5.13",
+        "vite-plugin-vue-devtools": "npm:vite-plugin-vue-devtools@^7.7.0"
+    }
+}

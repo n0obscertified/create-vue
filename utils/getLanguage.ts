@@ -1,5 +1,7 @@
 import * as fs from 'node:fs'
-import * as path from 'node:path'
+import { join } from "node:path";
+import {resolve}from 'node:path'
+import { stringify } from "node:querystring";
 
 interface LanguageItem {
   hint?: string
@@ -63,11 +65,12 @@ function linkLocale(locale: string) {
     return 'en-US'
   }
 
-  let linkedLocale: string
+  let linkedLocale: string = '';
   try {
     linkedLocale = Intl.getCanonicalLocales(locale)[0]
-  } catch (error) {
-    console.log(`${error.toString()}, invalid language tag: "${locale}"\n`)
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.log(`${errorMessage}, invalid language tag: "${locale}"\n`)
   }
   switch (linkedLocale) {
     case 'zh-TW':
@@ -88,9 +91,9 @@ function linkLocale(locale: string) {
 
 function getLocale() {
   const shellLocale =
-    process.env.LC_ALL || // POSIX locale environment variables
-    process.env.LC_MESSAGES ||
-    process.env.LANG ||
+    Deno.env.get('LC_ALL') || // POSIX locale environment variables
+    Deno.env.get('LC_MESSAGES') ||
+    Deno.env.get('LANG') ||
     Intl.DateTimeFormat().resolvedOptions().locale || // Built-in ECMA-402 support
     'en-US' // Default fallback
 
@@ -99,17 +102,26 @@ function getLocale() {
 
 export default function getLanguage() {
   const locale = getLocale()
-
+  console.log('locale', locale)
   // Note here __dirname would not be transpiled,
   // so it refers to the __dirname of the file `<repositoryRoot>/outfile.cjs`
   // TODO: use glob import once https://github.com/evanw/esbuild/issues/3320 is fixed
-  const localesRoot = path.resolve(__dirname, 'locales')
-  const languageFilePath = path.resolve(localesRoot, `${locale}.json`)
+  const dirName = import.meta.dirname ?? Deno.cwd()
+  // console.log("the file name",import.meta.dirname )
+  const localesRoot = join(dirName,'..','/locales')
+  // console.log("the file name",localesRoot)
+  const languageFilePath = join(localesRoot, `${locale}.json`)
   const doesLanguageExist = fs.existsSync(languageFilePath)
 
-  const lang: Language = doesLanguageExist
-    ? require(languageFilePath)
-    : require(path.resolve(localesRoot, 'en-US.json'))
+  const _import = doesLanguageExist
+    ? import(languageFilePath, { with: { type: 'json' } })
+    : import(resolve(localesRoot, 'en-US.json'), { with: { type: 'json' } })
 
-  return lang
+  
+
+  return (async()=>{
+    const module = await _import
+    
+    return module.default
+  })()
 }

@@ -1,9 +1,10 @@
-# create-vue <a href="https://npmjs.com/package/create-vue"><img src="https://badgen.net/npm/v/create-vue" alt="npm package"></a> <a href="https://nodejs.org/en/about/previous-releases"><img src="https://img.shields.io/node/v/create-vue" alt="node compatibility"></a>
+# create-vue
+<!-- # create-vue <a href="https://npmjs.com/package/create-vue"><img src="https://badgen.net/npm/v/create-vue" alt="npm package"></a> <a href="https://nodejs.org/en/about/previous-releases"><img src="https://img.shields.io/node/v/create-vue" alt="node compatibility"></a> -->
 
 The recommended way to start a Vite-powered Vue project
 
 <p align="center">
-  <img width="898" alt="Screenshot from terminal" src="https://github.com/vuejs/create-vue/blob/main/media/screenshot-cli.png?raw=true">
+  <img width="898" alt="Screenshot from terminal" src="./media/screenshot-cli.png?raw=true">
 </p>
 
 ## Usage
@@ -11,7 +12,7 @@ The recommended way to start a Vite-powered Vue project
 To create a new Vue project using `create-vue`, simply run the following command in your terminal:
 
 ```sh
-npm create vue@latest
+deno -A create-vue/index.ts
 ```
 
 > [!NOTE]

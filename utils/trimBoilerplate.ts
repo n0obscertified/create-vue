@@ -1,5 +1,5 @@
 import * as fs from 'node:fs'
-import * as path from 'path'
+import * as path from 'node:path'
 
 function replaceContent(filepath: string, replacer: (content: string) => string) {
   const content = fs.readFileSync(filepath, 'utf8')

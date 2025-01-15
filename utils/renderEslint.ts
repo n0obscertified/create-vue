@@ -3,38 +3,47 @@ import * as path from 'node:path'
 
 import createESLintConfig from '@vue/create-eslint-config'
 
-import sortDependencies from './sortDependencies'
-import deepMerge from './deepMerge'
+import sortDependencies from './sortDependencies.ts'
+import deepMerge from './deepMerge.ts'
 
-import eslintTemplatePackage from '../template/eslint/package.json' assert { type: 'json' }
+import eslintTemplatePackage from '../template/eslint/package.json' with { type: 'json' }
 const eslintDeps = eslintTemplatePackage.devDependencies
 
+interface EslintOptions {
+  needsTypeScript: boolean
+  needsVitest: boolean
+  needsCypress: boolean
+  needsCypressCT: boolean
+  needsOxlint: boolean
+  needsPrettier: boolean
+  needsPlaywright: boolean
+}
+
+interface AdditionalConfigOptions {
+  needsVitest: boolean
+  needsCypress: boolean
+  needsCypressCT: boolean
+  needsPlaywright: boolean
+}
+
 export default function renderEslint(
-  rootDir,
-  {
-    needsTypeScript,
-    needsVitest,
-    needsCypress,
-    needsCypressCT,
-    needsOxlint,
-    needsPrettier,
-    needsPlaywright,
-  },
+  rootDir: string,
+  options: EslintOptions
 ) {
   const additionalConfigs = getAdditionalConfigs({
-    needsVitest,
-    needsCypress,
-    needsCypressCT,
-    needsPlaywright,
+    needsVitest: options.needsVitest,
+    needsCypress: options.needsCypress,
+    needsCypressCT: options.needsCypressCT,
+    needsPlaywright: options.needsPlaywright,
   })
 
   const { pkg, files } = createESLintConfig({
     styleGuide: 'default',
-    hasTypeScript: needsTypeScript,
-    needsOxlint,
+    hasTypeScript: options.needsTypeScript,
+    needsOxlint: options.needsOxlint,
     // Theoretically, we could add Prettier without requring ESLint.
     // But it doesn't seem to be a good practice, so we just let createESLintConfig handle it.
-    needsPrettier,
+    needsPrettier: options.needsPrettier,
     additionalConfigs,
   })
 
@@ -63,15 +72,10 @@ type AdditionalConfig = {
 type AdditionalConfigArray = Array<AdditionalConfig>
 
 // visible for testing
-export function getAdditionalConfigs({
-  needsVitest,
-  needsCypress,
-  needsCypressCT,
-  needsPlaywright,
-}) {
+export function getAdditionalConfigs(options: AdditionalConfigOptions) {
   const additionalConfigs: AdditionalConfigArray = []
 
-  if (needsVitest) {
+  if (options.needsVitest) {
     additionalConfigs.push({
       devDependencies: {
         '@vitest/eslint-plugin': eslintDeps['@vitest/eslint-plugin'],
@@ -89,7 +93,7 @@ export function getAdditionalConfigs({
     })
   }
 
-  if (needsCypress) {
+  if (options.needsCypress) {
     additionalConfigs.push({
       devDependencies: {
         'eslint-plugin-cypress': eslintDeps['eslint-plugin-cypress'],
@@ -102,11 +106,11 @@ export function getAdditionalConfigs({
     ...pluginCypress.configs.recommended,
     files: [
       ${[
-        ...(needsCypressCT ? ["'**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}',"] : []),
+        ...(options.needsCypressCT ? ["'**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}',"] : []),
         'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}',
         'cypress/support/**/*.{js,ts,jsx,tsx}',
       ]
-        .map(JSON.stringify.bind(JSON))
+        .map((str) => JSON.stringify(str))
         .join(',\n      ')
         .replace(/"/g, "'" /* use single quotes as in the other configs */)}
     ],
@@ -116,7 +120,7 @@ export function getAdditionalConfigs({
     })
   }
 
-  if (needsPlaywright) {
+  if (options.needsPlaywright) {
     additionalConfigs.push({
       devDependencies: {
         'eslint-plugin-playwright': eslintDeps['eslint-plugin-playwright'],

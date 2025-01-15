@@ -2,8 +2,14 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import deepMerge from './deepMerge'
-import sortDependencies from './sortDependencies'
+import deepMerge from './deepMerge.ts'
+import sortDependencies from './sortDependencies.ts'
+
+interface DataStore {
+  [key: string]: any
+}
+
+export type TemplateCallback = (dataStore: DataStore) => Promise<void>
 
 /**
  * Renders a template folder/file to the file system,
@@ -14,7 +20,11 @@ import sortDependencies from './sortDependencies'
  * @param {string} src source filename to copy
  * @param {string} dest destination filename of the copy operation
  */
-function renderTemplate(src, dest, callbacks) {
+function renderTemplate(
+  src: string,
+  dest: string,
+  callbacks: TemplateCallback[]
+) {
   const stats = fs.statSync(src)
 
   if (stats.isDirectory()) {
@@ -33,7 +43,7 @@ function renderTemplate(src, dest, callbacks) {
 
   const filename = path.basename(src)
 
-  if (filename === 'package.json' && fs.existsSync(dest)) {
+  if (filename === 'deno.json' && fs.existsSync(dest)) {
     // merge instead of overwriting
     const existing = JSON.parse(fs.readFileSync(dest, 'utf8'))
     const newPackage = JSON.parse(fs.readFileSync(src, 'utf8'))
