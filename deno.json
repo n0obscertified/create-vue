@@ -4,7 +4,7 @@
     "exports":{
       ".": "./index.ts"
     },
-    "version": "0.2.9",
+    "version": "0.2.10",
     "license": "MIT",
     "imports": {
         "@tsconfig/node22": "npm:@tsconfig/node22@^22.0.0",
