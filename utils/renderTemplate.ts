@@ -25,7 +25,10 @@ function renderTemplate(
   dest: string,
   callbacks: TemplateCallback[]
 ) {
-  const stats = fs.statSync(src)
+  const stats = src.startsWith('https://')
+  ? { isDirectory: () => src.endsWith('/') }
+  : fs.statSync(src);
+
 
   if (stats.isDirectory()) {
     // skip node_module
