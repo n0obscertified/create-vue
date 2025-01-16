@@ -415,7 +415,14 @@ async function init() {
   // work around the esbuild issue that `import.meta.url` cannot be correctly transpiled
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
-  const templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
+  let templateRoot: string;
+  if (import.meta.url.startsWith('https://jsr.io/')) {
+    // When running from JSR
+    templateRoot = new URL('./template/', import.meta.url).href;
+  } else {
+    // When running locally
+    templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
+  }
   const callbacks: TemplateCallback[] = []
   const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)
