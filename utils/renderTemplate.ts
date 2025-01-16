@@ -1,5 +1,5 @@
 import * as fs from 'node:fs'
-import * as path from "https://deno.land/std@0.224.0/path/mod.ts";
+import * as path from "jsr:@std/path@1";
 // import { pathToFileURL } from 'node:url'
 
 import deepMerge from './deepMerge.ts'
