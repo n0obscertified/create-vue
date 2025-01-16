@@ -153,6 +153,7 @@ async function init() {
       argv.pinia ??
       (argv.tests || argv['with-tests']) ??
       argv.vitest ??
+      argv.vuetify ?? 
       argv.cypress ??
       argv.nightwatch ??
       argv.playwright ??
@@ -179,7 +180,8 @@ async function init() {
     needsE2eTesting?: false | 'cypress' | 'nightwatch' | 'playwright'
     needsEslint?: false | 'eslintOnly' | 'speedUpWithOxlint'
     needsOxlint?: boolean
-    needsPrettier?: boolean
+    needsPrettier?: boolean,
+    needsVuetify?: boolean
   } = {}
 
   console.log()
@@ -230,7 +232,8 @@ async function init() {
         },
         {
           name: 'overwriteChecker',
-          type: (prev: any, values: any) => {
+          // deno-lint-ignore no-explicit-any
+          type: (_prev: any, values: any) => {
             if (values.shouldOverwrite === false) {
               throw new Error(red('✖') + ` ${language.errors.operationCancelled}`)
             }
@@ -277,6 +280,14 @@ async function init() {
           inactive: language.defaultToggleOptions.inactive,
         },
         {
+          name: 'needsVuetify',
+          type: () => (isFeatureFlagsUsed ? null : 'toggle'),
+          message: language.needsVuetify.message,
+          initial: false,
+          active: language.defaultToggleOptions.active,
+          inactive: language.defaultToggleOptions.inactive,
+        },
+        {
           name: 'needsVitest',
           type: () => (isFeatureFlagsUsed ? null : 'toggle'),
           message: language.needsVitest.message,
@@ -290,7 +301,8 @@ async function init() {
           hint: language.needsE2eTesting.hint,
           message: language.needsE2eTesting.message,
           initial: 0,
-          choices: (prev: any, answers: any) => [
+          // deno-lint-ignore no-explicit-any
+          choices: (_prev: any, answers: any) => [
             {
               title: language.needsE2eTesting.selectOptions.negative.title,
               value: false,
@@ -337,7 +349,8 @@ async function init() {
         },
         {
           name: 'needsPrettier',
-          type: (prev: any, values: any) => {
+          // deno-lint-ignore no-explicit-any
+          type: (_prev: any, values: any) => {
             if (isFeatureFlagsUsed || !values.needsEslint) {
               return null
             }
@@ -373,6 +386,7 @@ async function init() {
     needsPinia = Boolean(argv.pinia),
     needsVitest = Boolean(argv.vitest || argv.tests),
     needsPrettier = Boolean(argv['eslint-with-prettier']),
+    needsVuetify = Boolean(argv.vuetify),
   } = result
 
   const needsEslint = Boolean(argv.eslint || argv['eslint-with-prettier'] || result.needsEslint)
@@ -420,6 +434,9 @@ async function init() {
   }
   if (needsPinia) {
     render('config/pinia')
+  }
+  if (needsVuetify) {
+    render('config/vuetify')
   }
   if (needsVitest) {
     render('config/vitest')
@@ -526,12 +543,21 @@ async function init() {
   // prettier-ignore
   const codeTemplate =
     (needsTypeScript ? 'typescript-' : '') +
-    (needsRouter ? 'router' : 'default')
+    (needsRouter ? 'router' : 'default') + 
+    (needsVuetify ? '-vuetify' : '')
   render(`code/${codeTemplate}`)
 
   // Render entry file (main.js/ts).
-  if (needsPinia && needsRouter) {
+  if (needsVuetify && needsRouter && needsPinia) {
+    render('entry/router-vuetify-and-pinia')
+  } else if (needsPinia && needsRouter) {
     render('entry/router-and-pinia')
+  }else if (needsVuetify && needsRouter) {
+    render('entry/router-and-vuetify')  
+  }else if (needsVuetify && needsPinia) {
+    render('entry/pinia-and-vuetify')
+  } else if (needsVuetify) {
+    render('entry/vuetify')
   } else if (needsPinia) {
     render('entry/pinia')
   } else if (needsRouter) {

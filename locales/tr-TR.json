@@ -28,6 +28,9 @@
   "needsVitest": {
     "message": "Birim Testi için Vitest eklensin mi?"
   },
+  "needsVuetify": {
+    "message": "UI Kitabı için Vuetify eklensin mi?"
+  },
   "needsE2eTesting": {
     "message": "Uçtan Uca Test Çözümü Eklensin mi?",
     "hint": "- Ok tuşlarını kullan. Gönderime geri dön.",

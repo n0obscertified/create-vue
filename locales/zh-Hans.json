@@ -28,6 +28,9 @@
   "needsVitest": {
     "message": "是否引入 Vitest 用于单元测试？"
   },
+  "needsVuetify": {
+    "message": "是否引入 Vuetify 用于 UI 库？"
+  },
   "needsE2eTesting": {
     "message": "是否要引入一款端到端（End to End）测试工具？",
     "hint": "- 使用箭头切换按Enter确认。",

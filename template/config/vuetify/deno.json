@@ -1,0 +1,16 @@
+{
+    "nodeModulesDir": "auto",
+    "tasks": {
+      "build": "vite build",
+      "dev": "vite",
+      "preview": "vite preview"
+    },
+    "imports": {
+      "@mdi/font": "npm:@mdi/font@^7.4.47",
+      "vite-plugin-node-polyfills": "npm:vite-plugin-node-polyfills@^0.22.0",
+      "vue": "npm:vue@^3.5.13",
+      "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@^5.0.5",
+      "vuetify": "npm:vuetify@^3.6.14"
+    }
+  }
+  
