@@ -2,7 +2,7 @@
     "nodeModulesDir":"auto",
     "name": "@denovue/create-vue",
     "exports":"./index.ts",
-    "version": "0.2.6",
+    "version": "0.2.5",
     "license": "MIT",
     "imports": {
         "@tsconfig/node22": "npm:@tsconfig/node22@^22.0.0",
