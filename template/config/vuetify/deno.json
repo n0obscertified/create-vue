@@ -10,7 +10,12 @@
       "vite-plugin-node-polyfills": "npm:vite-plugin-node-polyfills@^0.22.0",
       "vue": "npm:vue@^3.5.13",
       "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@^5.0.5",
-      "vuetify": "npm:vuetify@^3.6.14"
+      "vuetify": "npm:vuetify@^3.6.14",
+      "unplugin-fonts": "npm:unplugin-fonts@^1.1.1",
+      "sass": "npm:sass@^1.77.8",
+      "sass-embedded": "npm:sass-embedded@^1.77.8",
+      "roboto-fontface": "npm:roboto-fontface@*",
+      "unplugin-vue-components": "npm:unplugin-vue-components@^0.27.2"
     }
   }
   
