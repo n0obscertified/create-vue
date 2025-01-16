@@ -1,7 +1,9 @@
 {
     "nodeModulesDir":"auto",
     "name": "@denovue/create-vue",
-    "exports":"./index.ts",
+    "exports":{
+      ".": "./index.ts"
+    },
     "version": "0.2.6",
     "license": "MIT",
     "imports": {
@@ -27,13 +29,19 @@
       "sloppy-imports"
     ],
     "include": [
-      "locales/**/*.json",
-      "template/**/*"
+      "./locales/**/*",
+      "./template/**/*",
+      "./utils/**/*",
+      "./deno.json",
+      "./index.ts"
     ],
     "publish": {
       "include": [
-        "locales/**/*.json",
-        "template/**/*"
+        "./locales/**/*",
+        "./template/**/*",
+        "./utils/**/*",
+        "./deno.json",
+        "./index.ts"
       ]
     }
 }

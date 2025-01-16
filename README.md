@@ -13,6 +13,7 @@ To create a new Vue project using `create-vue`, simply run the following command
 
 ```sh
 deno -A create-vue/index.ts
+deno run -A jsr:@denovue/create-vue
 ```
 
 > [!NOTE]
