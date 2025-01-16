@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import * as fs from 'node:fs'
-import * as path from 'node:path'
+import * as path from "https://deno.land/std@0.224.0/path/mod.ts";
 
 import { parseArgs } from 'node:util'
 
@@ -414,7 +414,7 @@ async function init() {
   // work around the esbuild issue that `import.meta.url` cannot be correctly transpiled
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
-  const templateRoot = path.resolve(import.meta.dirname ?? Deno.cwd(), 'template')
+  const templateRoot = path.join(path.dirname(path.fromFileUrl(Deno.mainModule)), 'template');
   const callbacks: TemplateCallback[] = []
   const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)

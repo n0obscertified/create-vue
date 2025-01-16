@@ -1,6 +1,6 @@
 import * as fs from 'node:fs'
-import * as path from 'node:path'
-import { pathToFileURL } from 'node:url'
+import * as path from "https://deno.land/std@0.224.0/path/mod.ts";
+// import { pathToFileURL } from 'node:url'
 
 import deepMerge from './deepMerge.ts'
 import sortDependencies from './sortDependencies.ts'
@@ -90,7 +90,7 @@ function renderTemplate(
 
     // Add a callback to the array for late usage when template files are being processed
     callbacks.push(async (dataStore) => {
-      const getData = (await import(pathToFileURL(src).toString())).default
+      const getData = (await import(path.toFileUrl(src).toString())).default
 
       // Though current `getData` are all sync, we still retain the possibility of async
       dataStore[dest] = await getData({
