@@ -113,7 +113,7 @@ Unstable feature flags:
 
 async function init() {
   const cwd = Deno.cwd()
-  const args = Deno.args.slice(2)
+  const args = Deno.args
 
   // alias is not supported by parseArgs
   const options = {
@@ -158,7 +158,8 @@ async function init() {
       argv.eslint ??
       argv['eslint-with-prettier']
     ) === 'boolean'
-
+  
+  
   let targetDir = positionals[0]
   const defaultProjectName = !targetDir ? 'vue-project' : targetDir
 
@@ -414,7 +415,7 @@ async function init() {
   // work around the esbuild issue that `import.meta.url` cannot be correctly transpiled
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
-  const templateRoot = path.join(path.dirname(path.fromFileUrl(Deno.mainModule)), 'template');
+  const templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
   const callbacks: TemplateCallback[] = []
   const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)
