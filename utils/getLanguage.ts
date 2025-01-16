@@ -1,7 +1,8 @@
 import * as fs from 'node:fs'
 import { join } from "node:path";
 import {resolve}from 'node:path'
-import { stringify } from "node:querystring";
+// import { stringify } from "node:querystring";
+import { locales , type LocaleKey} from '../locales/index.ts'
 
 interface LanguageItem {
   hint?: string
@@ -106,22 +107,16 @@ export default function getLanguage() {
   // Note here __dirname would not be transpiled,
   // so it refers to the __dirname of the file `<repositoryRoot>/outfile.cjs`
   // TODO: use glob import once https://github.com/evanw/esbuild/issues/3320 is fixed
-  const dirName = import.meta.dirname ?? Deno.cwd()
+  // const dirName = import.meta.dirname ?? Deno.cwd()
   // console.log("the file name",import.meta.dirname )
-  const localesRoot = join(dirName,'..','/locales')
+  // const localesRoot = join(dirName,'..','/locales')
   // console.log("the file name",localesRoot)
-  const languageFilePath = join(localesRoot, `${locale}.json`)
-  const doesLanguageExist = fs.existsSync(languageFilePath)
+  // const languageFilePath = join(localesRoot, `${locale}.json`)
+  const doesLanguageExist =  locales[locale as LocaleKey] //fs.existsSync(languageFilePath)
 
   const _import = doesLanguageExist
-    ? import(languageFilePath, { with: { type: 'json' } })
-    : import(resolve(localesRoot, 'en-US.json'), { with: { type: 'json' } })
+    ? locales[locale as LocaleKey]
+    : locales['en-US']
 
-  
-
-  return (async()=>{
-    const module = await _import
-    
-    return module.default
-  })()
+  return _import
 }

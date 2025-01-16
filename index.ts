@@ -7,8 +7,6 @@ import { parseArgs } from 'node:util'
 
 import prompts from 'prompts'
 import { red, green, cyan, bold } from 'kleur/colors'
-import {stdout} from "node:process"
-
 import ejs from 'ejs'
 
 import * as banners from './utils/banners.ts'
