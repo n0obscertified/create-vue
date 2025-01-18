@@ -1,4 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+<%_ for (const  importer  of imports) { _%>
+  <%- importer %>
+<%_ } _%>
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({

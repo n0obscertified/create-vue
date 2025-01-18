@@ -6,8 +6,9 @@
  */
 
 // Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { routes } from 'vue-router/auto-routes'
+<%_ for (const  importer  of imports) { _%>
+  <%- importer %>
+  <%_ } _%>
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

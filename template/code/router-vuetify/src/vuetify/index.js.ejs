@@ -9,7 +9,9 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 // Composables
-import { createVuetify } from 'vuetify'
+<%_ for (const  importer  of imports) { _%>
+  <%- importer %>
+  <%_ } _%>
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export const vuetify =  createVuetify({

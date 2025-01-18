@@ -19,8 +19,14 @@ import getCommand from './utils/getCommand.ts'
 import getLanguage from './utils/getLanguage.ts'
 import renderEslint from './utils/renderEslint.ts'
 import { trimBoilerplate, removeCSSImport, emptyRouterConfig } from './utils/trimBoilerplate.ts'
-
+import { fetchTemplates } from './scripts/fetchTemplates.ts'
+import { generateMappings } from './scripts/generateMappings.ts'
 import cliPackageJson from './deno.json' with { type: "json" }
+
+if(!((cliPackageJson as Record<string, unknown>)?.customMappings ?? false)) {
+  console.log("Generating mappings")
+  await generateMappings(['./template'])
+}
 
 function isValidPackageName(projectName:string) {
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
@@ -416,13 +422,15 @@ async function init() {
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
   let templateRoot: string = './template'; 
-// if (import.meta.url.startsWith('https://jsr.io/')) {
-//   // When running from JSR
-//   templateRoot = new URL('./template/', import.meta.url).href;
-// } else {
-//   // When running locally
-//   templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
-// }
+if (import.meta.url.startsWith('https://jsr.io/')) {
+  // When running from JSR
+  console.log("Running from JSR fetching templates", import.meta.url.toString())
+  await fetchTemplates()
+  console.log("Templates fetched")
+} else {
+  // When running locally
+  templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
+}
   const callbacks: TemplateCallback[] = []
   const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)

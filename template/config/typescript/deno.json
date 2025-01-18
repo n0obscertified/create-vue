@@ -5,6 +5,8 @@
     "type-check": "vue-tsc --build"
   },
   "imports": {
-    "vue-tsc": "npm:vue-tsc@^2.2.0"
+    "vue-tsc": "npm:vue-tsc@^2.2.0",
+    "@vue/tsconfig": "npm:@vue/tsconfig@^0.7.0",
+    "@tsconfig/node22": "npm:@tsconfig/node22@^22.0.0"
   }
 }

@@ -1,49 +1,510 @@
 {
-    "nodeModulesDir":"auto",
-    "name": "@denovue/create-vue",
-    "exports":{
-      ".": "./index.ts"
-    },
-    "version": "0.2.10",
-    "license": "MIT",
-    "imports": {
-        "@tsconfig/node22": "npm:@tsconfig/node22@^22.0.0",
-        "@types/eslint": "npm:@types/eslint@^9.6.1",
-        "@types/node": "npm:@types/node@^22.10.5",
-        "@types/prompts": "npm:@types/prompts@^2.4.9",
-        "@vue/create-eslint-config": "npm:@vue/create-eslint-config@^0.6.1",
-        "@vue/tsconfig": "npm:@vue/tsconfig@^0.7.0",
-        "ejs": "npm:ejs@^3.1.10",
-        "esbuild": "npm:esbuild@^0.24.2",
-        "esbuild-plugin-license": "npm:esbuild-plugin-license@^1.2.3",
-        "husky": "npm:husky@^9.1.7",
-        "kleur": "npm:kleur@^4.1.5",
-        "lint-staged": "npm:lint-staged@^15.3.0",
-        "prettier": "npm:prettier@^3.4.2",
-        "prompts": "npm:prompts@^2.4.2",
-        "vitest": "npm:vitest@^2.1.8",
-        "zx": "npm:zx@^8.3.0"
-    },
-    "compilerOptions": {},
-    "unstable": [
-      "sloppy-imports"
-    ],
+  "nodeModulesDir": "auto",
+  "name": "@denovue/create-vue",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "version": "0.2.18",
+  "license": "MIT",
+  "imports": {
+    "@types/eslint": "npm:@types/eslint@^9.6.1",
+    "@types/node": "npm:@types/node@^22.10.5",
+    "@types/prompts": "npm:@types/prompts@^2.4.9",
+    "@vue/create-eslint-config": "npm:@vue/create-eslint-config@^0.6.1",
+    "ejs": "npm:ejs@^3.1.10",
+    "esbuild": "npm:esbuild@^0.24.2",
+    "esbuild-plugin-license": "npm:esbuild-plugin-license@^1.2.3",
+    "husky": "npm:husky@^9.1.7",
+    "kleur": "npm:kleur@^4.1.5",
+    "lint-staged": "npm:lint-staged@^15.3.0",
+    "prettier": "npm:prettier@^3.4.2",
+    "prompts": "npm:prompts@^2.4.2",
+    "vitest": "npm:vitest@^2.1.8",
+    "zx": "npm:zx@^8.3.0"
+  },
+  "compilerOptions": {},
+  "unstable": [
+    "sloppy-imports"
+  ],
+  "include": [
+    "./locales/**/*",
+    "./template/**/*",
+    "./utils/**/*",
+    "./deno.json",
+    "./index.ts",
+    "./readme.md",
+    "./scripts/generateMappings.ts",
+    "./scripts/fetchTemplates.ts"
+  ],
+  "publish": {
     "include": [
       "./locales/**/*",
       "./template/**/*",
       "./utils/**/*",
       "./deno.json",
       "./index.ts",
-      "./readme.md"
-    ],
-    "publish": {
-      "include": [
-        "./locales/**/*",
-        "./template/**/*",
-        "./utils/**/*",
-        "./deno.json",
-        "./index.ts",
-        "./readme.md"
-      ]
+      "./readme.md",
+      "./scripts/generateMappings.ts",
+      "./scripts/fetchTemplates.ts"
+    ]
+  },
+  "customMappings": {
+    "template": {
+      "bare": {
+        ".DS_Store": "template/bare/.DS_Store",
+        "vitest": {
+          "src": {
+            "__tests__": {
+              "App.spec.js": "template/bare/vitest/src/__tests__/App.spec.js"
+            }
+          }
+        },
+        "typescript": {
+          "src": {
+            "App.vue": "template/bare/typescript/src/App.vue"
+          }
+        },
+        "nightwatch-ct": {
+          "src": {
+            "__tests__": {
+              "App.spec.js": "template/bare/nightwatch-ct/src/__tests__/App.spec.js"
+            }
+          }
+        },
+        "cypress-ct": {
+          "src": {
+            "__tests__": {
+              "App.cy.js": "template/bare/cypress-ct/src/__tests__/App.cy.js"
+            }
+          }
+        },
+        "base": {
+          "src": {
+            "App.vue": "template/bare/base/src/App.vue"
+          }
+        }
+      },
+      ".DS_Store": "template/.DS_Store",
+      "config": {
+        "cypress": {
+          "cypress": {
+            "jsconfig.json": "template/config/cypress/cypress/jsconfig.json",
+            "support": {
+              "commands.ts": "template/config/cypress/cypress/support/commands.ts",
+              "commands.js": "template/config/cypress/cypress/support/commands.js",
+              "e2e.js": "template/config/cypress/cypress/support/e2e.js"
+            },
+            "fixtures": {
+              "example.json": "template/config/cypress/cypress/fixtures/example.json"
+            },
+            "e2e": {
+              "example.cy.js": "template/config/cypress/cypress/e2e/example.cy.js"
+            }
+          },
+          "cypress.config.js": "template/config/cypress/cypress.config.js",
+          "package.json": "template/config/cypress/package.json"
+        },
+        ".DS_Store": "template/config/.DS_Store",
+        "prettier": {
+          ".vscode": {
+            "settings.json": "template/config/prettier/.vscode/settings.json",
+            "extensions.json": "template/config/prettier/.vscode/extensions.json"
+          }
+        },
+        "vitest": {
+          "vitest.config.js.data.mjs": "template/config/vitest/vitest.config.js.data.mjs",
+          "deno.json": "template/config/vitest/deno.json",
+          ".vscode": {
+            "extensions.json": "template/config/vitest/.vscode/extensions.json"
+          },
+          "vitest.config.js.ejs": "template/config/vitest/vitest.config.js.ejs",
+          "src": {
+            "components": {
+              "__tests__": {
+                "HelloWorld.spec.js.data.mjs": "template/config/vitest/src/components/__tests__/HelloWorld.spec.js.data.mjs",
+                "HelloWorld.spec.js.ejs": "template/config/vitest/src/components/__tests__/HelloWorld.spec.js.ejs"
+              }
+            }
+          }
+        },
+        "vuetify": {
+          "deno.json": "template/config/vuetify/deno.json"
+        },
+        "typescript": {
+          "env.d.ts": "template/config/typescript/env.d.ts",
+          "deno.json": "template/config/typescript/deno.json"
+        },
+        "playwright": {
+          "_gitignore": "template/config/playwright/_gitignore",
+          "playwright.config.js": "template/config/playwright/playwright.config.js",
+          "package.json": "template/config/playwright/package.json",
+          ".vscode": {
+            "extensions.json": "template/config/playwright/.vscode/extensions.json"
+          },
+          "e2e": {
+            "vue.spec.ts": "template/config/playwright/e2e/vue.spec.ts",
+            "vue.spec.js": "template/config/playwright/e2e/vue.spec.js"
+          }
+        },
+        "nightwatch": {
+          "_gitignore": "template/config/nightwatch/_gitignore",
+          "tests": {
+            "e2e": {
+              "example.js": "template/config/nightwatch/tests/e2e/example.js"
+            }
+          },
+          "nightwatch": {
+            "nightwatch.d.ts": "template/config/nightwatch/nightwatch/nightwatch.d.ts"
+          },
+          "vite.config.js.data.mjs": "template/config/nightwatch/vite.config.js.data.mjs",
+          "package.json": "template/config/nightwatch/package.json",
+          ".vscode": {
+            "extensions.json": "template/config/nightwatch/.vscode/extensions.json"
+          },
+          "nightwatch.conf.cjs": "template/config/nightwatch/nightwatch.conf.cjs"
+        },
+        "nightwatch-ct": {
+          "nightwatch": {
+            "index.html": "template/config/nightwatch-ct/nightwatch/index.html"
+          },
+          "vite.config.js.data.mjs": "template/config/nightwatch-ct/vite.config.js.data.mjs",
+          "package.json": "template/config/nightwatch-ct/package.json",
+          "src": {
+            "components": {
+              "__tests__": {
+                "HelloWorld.spec.js": "template/config/nightwatch-ct/src/components/__tests__/HelloWorld.spec.js"
+              }
+            }
+          }
+        },
+        "cypress-ct": {
+          "cypress": {
+            "support": {
+              "component.ts": "template/config/cypress-ct/cypress/support/component.ts",
+              "component-index.html": "template/config/cypress-ct/cypress/support/component-index.html",
+              "component.js": "template/config/cypress-ct/cypress/support/component.js"
+            }
+          },
+          "cypress.config.js": "template/config/cypress-ct/cypress.config.js",
+          "package.json": "template/config/cypress-ct/package.json",
+          "src": {
+            "components": {
+              "__tests__": {
+                "HelloWorld.cy.js": "template/config/cypress-ct/src/components/__tests__/HelloWorld.cy.js"
+              }
+            }
+          }
+        },
+        "pinia": {
+          "deno.json": "template/config/pinia/deno.json",
+          "src": {
+            "stores": {
+              "counter.js": "template/config/pinia/src/stores/counter.js"
+            }
+          }
+        },
+        "eslint": {
+          ".vscode": {
+            "settings.json": "template/config/eslint/.vscode/settings.json",
+            "extensions.json": "template/config/eslint/.vscode/extensions.json"
+          }
+        },
+        "jsx": {
+          "deno.json": "template/config/jsx/deno.json",
+          "vite.config.js.data.mjs": "template/config/jsx/vite.config.js.data.mjs"
+        },
+        "router": {
+          "deno.json": "template/config/router/deno.json"
+        }
+      },
+      "entry": {
+        ".DS_Store": "template/entry/.DS_Store",
+        "router-and-pinia": {
+          "src": {
+            "main.js.data.mjs": "template/entry/router-and-pinia/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/router-and-pinia/src/main.js.ejs"
+          }
+        },
+        "router-and-vuetify": {
+          "src": {
+            "main.js.data.mjs": "template/entry/router-and-vuetify/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/router-and-vuetify/src/main.js.ejs"
+          }
+        },
+        "vuetify": {
+          "src": {
+            "main.js.data.mjs": "template/entry/vuetify/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/vuetify/src/main.js.ejs"
+          }
+        },
+        "default": {
+          "src": {
+            "main.js.data.mjs": "template/entry/default/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/default/src/main.js.ejs"
+          }
+        },
+        "pinia-and-vuetify": {
+          "src": {
+            "main.js.data.mjs": "template/entry/pinia-and-vuetify/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/pinia-and-vuetify/src/main.js.ejs"
+          }
+        },
+        "router-vuetify-and-pinia": {
+          "src": {
+            "main.js.data.mjs": "template/entry/router-vuetify-and-pinia/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/router-vuetify-and-pinia/src/main.js.ejs"
+          }
+        },
+        "pinia": {
+          "src": {
+            "main.js.data.mjs": "template/entry/pinia/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/pinia/src/main.js.ejs"
+          }
+        },
+        "router": {
+          "src": {
+            "main.js.data.mjs": "template/entry/router/src/main.js.data.mjs",
+            "main.js.ejs": "template/entry/router/src/main.js.ejs"
+          }
+        }
+      },
+      "tsconfig": {
+        "cypress": {
+          "cypress": {
+            "tsconfig.json": "template/tsconfig/cypress/cypress/tsconfig.json"
+          }
+        },
+        ".DS_Store": "template/tsconfig/.DS_Store",
+        "vitest": {
+          "package.json": "template/tsconfig/vitest/package.json",
+          "tsconfig.vitest.json": "template/tsconfig/vitest/tsconfig.vitest.json"
+        },
+        "playwright": {
+          "e2e": {
+            "tsconfig.json": "template/tsconfig/playwright/e2e/tsconfig.json"
+          }
+        },
+        "nightwatch": {
+          "nightwatch": {
+            "tsconfig.json": "template/tsconfig/nightwatch/nightwatch/tsconfig.json"
+          }
+        },
+        "nightwatch-ct": {
+          "tsconfig.app.json": "template/tsconfig/nightwatch-ct/tsconfig.app.json"
+        },
+        "cypress-ct": {
+          "tsconfig.cypress-ct.json": "template/tsconfig/cypress-ct/tsconfig.cypress-ct.json"
+        },
+        "base": {
+          "tsconfig.node.json": "template/tsconfig/base/tsconfig.node.json",
+          "tsconfig.app.json": "template/tsconfig/base/tsconfig.app.json"
+        }
+      },
+      "code": {
+        "default-vuetify": {
+          "jsconfig.json": "template/code/default-vuetify/jsconfig.json",
+          "README.md": "template/code/default-vuetify/README.md",
+          "vite.config.js.ejs": "template/code/default-vuetify/vite.config.js.ejs",
+          "public": {
+            "favicon.ico": "template/code/default-vuetify/public/favicon.ico"
+          },
+          "vite.config.js.data.mjs": "template/code/default-vuetify/vite.config.js.data.mjs",
+          "src": {
+            "App.vue": "template/code/default-vuetify/src/App.vue",
+            ".DS_Store": "template/code/default-vuetify/src/.DS_Store",
+            "vuetify": {
+              "index.js": "template/code/default-vuetify/src/vuetify/index.js"
+            },
+            "styles": {
+              "README.md": "template/code/default-vuetify/src/styles/README.md",
+              "settings.scss": "template/code/default-vuetify/src/styles/settings.scss"
+            },
+            "components": {
+              "HelloWorld.vue": "template/code/default-vuetify/src/components/HelloWorld.vue",
+              "README.md": "template/code/default-vuetify/src/components/README.md",
+              "AppFooter.vue": "template/code/default-vuetify/src/components/AppFooter.vue"
+            },
+            "assets": {
+              "logo.png": "template/code/default-vuetify/src/assets/logo.png",
+              "logo.svg": "template/code/default-vuetify/src/assets/logo.svg"
+            }
+          }
+        },
+        ".DS_Store": "template/code/.DS_Store",
+        "router-vuetify": {
+          "deno.json": "template/code/router-vuetify/deno.json",
+          "vite.config.js.ejs": "template/code/router-vuetify/vite.config.js.ejs",
+          "vite.config.js.data.mjs": "template/code/router-vuetify/vite.config.js.data.mjs",
+          "src": {
+            "App.vue": "template/code/router-vuetify/src/App.vue",
+            "vuetify": {
+              "index.js.data.mjs": "template/code/router-vuetify/src/vuetify/index.js.data.mjs",
+              "index.js.ejs": "template/code/router-vuetify/src/vuetify/index.js.ejs"
+            },
+            "styles": {
+              "README.md": "template/code/router-vuetify/src/styles/README.md",
+              "settings.scss": "template/code/router-vuetify/src/styles/settings.scss"
+            },
+            "components": {
+              "HelloWorld.vue": "template/code/router-vuetify/src/components/HelloWorld.vue"
+            },
+            "assets": {
+              "logo.png": "template/code/router-vuetify/src/assets/logo.png",
+              "logo.svg": "template/code/router-vuetify/src/assets/logo.svg"
+            },
+            "pages": {
+              "index.vue": "template/code/router-vuetify/src/pages/index.vue",
+              "README.md": "template/code/router-vuetify/src/pages/README.md"
+            },
+            "router": {
+              "index.js.data.mjs": "template/code/router-vuetify/src/router/index.js.data.mjs",
+              "index.js.ejs": "template/code/router-vuetify/src/router/index.js.ejs"
+            }
+          }
+        },
+        "typescript-router-vuetify": {
+          ".DS_Store": "template/code/typescript-router-vuetify/.DS_Store",
+          "deno.json": "template/code/typescript-router-vuetify/deno.json",
+          "vite.config.js.ejs": "template/code/typescript-router-vuetify/vite.config.js.ejs",
+          "vite.config.js.data.mjs": "template/code/typescript-router-vuetify/vite.config.js.data.mjs",
+          "src": {
+            "App.vue": "template/code/typescript-router-vuetify/src/App.vue",
+            "vuetify": {
+              "index.ts.ejs": "template/code/typescript-router-vuetify/src/vuetify/index.ts.ejs",
+              "index.ts.data.mjs": "template/code/typescript-router-vuetify/src/vuetify/index.ts.data.mjs"
+            },
+            "styles": {
+              "README.md": "template/code/typescript-router-vuetify/src/styles/README.md",
+              "settings.scss": "template/code/typescript-router-vuetify/src/styles/settings.scss"
+            },
+            "components": {
+              "HelloWorld.vue": "template/code/typescript-router-vuetify/src/components/HelloWorld.vue"
+            },
+            "assets": {
+              "logo.png": "template/code/typescript-router-vuetify/src/assets/logo.png",
+              "logo.svg": "template/code/typescript-router-vuetify/src/assets/logo.svg"
+            },
+            "pages": {
+              "index.vue": "template/code/typescript-router-vuetify/src/pages/index.vue",
+              "README.md": "template/code/typescript-router-vuetify/src/pages/README.md"
+            },
+            "router": {
+              "index.ts.ejs": "template/code/typescript-router-vuetify/src/router/index.ts.ejs",
+              "index.ts.data.mjs": "template/code/typescript-router-vuetify/src/router/index.ts.data.mjs"
+            }
+          }
+        },
+        "default": {
+          "src": {
+            "App.vue": "template/code/default/src/App.vue",
+            "components": {
+              "HelloWorld.vue": "template/code/default/src/components/HelloWorld.vue",
+              "icons": {
+                "IconCommunity.vue": "template/code/default/src/components/icons/IconCommunity.vue",
+                "IconSupport.vue": "template/code/default/src/components/icons/IconSupport.vue",
+                "IconTooling.vue": "template/code/default/src/components/icons/IconTooling.vue",
+                "IconDocumentation.vue": "template/code/default/src/components/icons/IconDocumentation.vue",
+                "IconEcosystem.vue": "template/code/default/src/components/icons/IconEcosystem.vue"
+              },
+              "WelcomeItem.vue": "template/code/default/src/components/WelcomeItem.vue",
+              "TheWelcome.vue": "template/code/default/src/components/TheWelcome.vue"
+            }
+          }
+        },
+        "typescript-router": {
+          "src": {
+            "App.vue": "template/code/typescript-router/src/App.vue",
+            "components": {
+              "HelloWorld.vue": "template/code/typescript-router/src/components/HelloWorld.vue",
+              "icons": {
+                "IconCommunity.vue": "template/code/typescript-router/src/components/icons/IconCommunity.vue",
+                "IconSupport.vue": "template/code/typescript-router/src/components/icons/IconSupport.vue",
+                "IconTooling.vue": "template/code/typescript-router/src/components/icons/IconTooling.vue",
+                "IconDocumentation.vue": "template/code/typescript-router/src/components/icons/IconDocumentation.vue",
+                "IconEcosystem.vue": "template/code/typescript-router/src/components/icons/IconEcosystem.vue"
+              },
+              "WelcomeItem.vue": "template/code/typescript-router/src/components/WelcomeItem.vue",
+              "TheWelcome.vue": "template/code/typescript-router/src/components/TheWelcome.vue"
+            },
+            "views": {
+              "AboutView.vue": "template/code/typescript-router/src/views/AboutView.vue",
+              "HomeView.vue": "template/code/typescript-router/src/views/HomeView.vue"
+            },
+            "router": {
+              "index.ts.ejs": "template/code/typescript-router/src/router/index.ts.ejs",
+              "index.ts.data.mjs": "template/code/typescript-router/src/router/index.ts.data.mjs"
+            }
+          }
+        },
+        "typescript-default": {
+          "src": {
+            "App.vue": "template/code/typescript-default/src/App.vue",
+            "components": {
+              "HelloWorld.vue": "template/code/typescript-default/src/components/HelloWorld.vue",
+              "icons": {
+                "IconCommunity.vue": "template/code/typescript-default/src/components/icons/IconCommunity.vue",
+                "IconSupport.vue": "template/code/typescript-default/src/components/icons/IconSupport.vue",
+                "IconTooling.vue": "template/code/typescript-default/src/components/icons/IconTooling.vue",
+                "IconDocumentation.vue": "template/code/typescript-default/src/components/icons/IconDocumentation.vue",
+                "IconEcosystem.vue": "template/code/typescript-default/src/components/icons/IconEcosystem.vue"
+              },
+              "WelcomeItem.vue": "template/code/typescript-default/src/components/WelcomeItem.vue",
+              "TheWelcome.vue": "template/code/typescript-default/src/components/TheWelcome.vue"
+            }
+          }
+        },
+        "router": {
+          "src": {
+            "App.vue": "template/code/router/src/App.vue",
+            "components": {
+              "HelloWorld.vue": "template/code/router/src/components/HelloWorld.vue",
+              "icons": {
+                "IconCommunity.vue": "template/code/router/src/components/icons/IconCommunity.vue",
+                "IconSupport.vue": "template/code/router/src/components/icons/IconSupport.vue",
+                "IconTooling.vue": "template/code/router/src/components/icons/IconTooling.vue",
+                "IconDocumentation.vue": "template/code/router/src/components/icons/IconDocumentation.vue",
+                "IconEcosystem.vue": "template/code/router/src/components/icons/IconEcosystem.vue"
+              },
+              "WelcomeItem.vue": "template/code/router/src/components/WelcomeItem.vue",
+              "TheWelcome.vue": "template/code/router/src/components/TheWelcome.vue"
+            },
+            "views": {
+              "AboutView.vue": "template/code/router/src/views/AboutView.vue",
+              "HomeView.vue": "template/code/router/src/views/HomeView.vue"
+            },
+            "router": {
+              "index.js.data.mjs": "template/code/router/src/router/index.js.data.mjs",
+              "index.js.ejs": "template/code/router/src/router/index.js.ejs"
+            }
+          }
+        }
+      },
+      "eslint": {
+        "package.json": "template/eslint/package.json"
+      },
+      "base": {
+        "_gitignore": "template/base/_gitignore",
+        "jsconfig.json": "template/base/jsconfig.json",
+        "index.html": "template/base/index.html",
+        ".DS_Store": "template/base/.DS_Store",
+        "deno.json": "template/base/deno.json",
+        "vite.config.js.ejs": "template/base/vite.config.js.ejs",
+        "public": {
+          "favicon.ico": "template/base/public/favicon.ico"
+        },
+        "vite.config.js.data.mjs": "template/base/vite.config.js.data.mjs",
+        ".vscode": {
+          "settings.json": "template/base/.vscode/settings.json",
+          "extensions.json": "template/base/.vscode/extensions.json"
+        },
+        "src": {
+          "assets": {
+            "main.css": "template/base/src/assets/main.css",
+            "logo.svg": "template/base/src/assets/logo.svg",
+            "base.css": "template/base/src/assets/base.css"
+          }
+        }
+      }
     }
+  }
 }

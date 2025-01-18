@@ -1,0 +1,45 @@
+// Plugins
+import Components from 'unplugin-vue-components/vite'
+import Vue from '@vitejs/plugin-vue'
+import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
+import ViteFonts from 'unplugin-fonts/vite'
+
+// Utilities
+<%_ for (const  importer  of imports) { _%>
+  <%- importer %>;
+<%_ } _%>
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+  <%_ for (const { initializer } of plugins) { _%>
+    <%- initializer _%>,
+  <%_ } _%>
+
+  ],
+  define: { 'process.env': {} },
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    },
+    extensions: [
+      '.js',
+      '.json',
+      '.jsx',
+      '.mjs',
+      '.ts',
+      '.tsx',
+      '.vue',
+    ],
+  },
+  server: {
+    port: 3000,
+  },
+  css: {
+    preprocessorOptions: {
+      sass: {
+        api: 'modern-compiler',
+      },
+    },
+  },
+})
