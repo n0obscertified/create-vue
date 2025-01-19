@@ -4,7 +4,7 @@
   "exports": {
     ".": "./index.ts"
   },
-  "version": "0.2.18",
+  "version": "0.2.19",
   "license": "MIT",
   "imports": {
     "@std/fs": "jsr:@std/fs@^1.0.9",
