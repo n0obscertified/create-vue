@@ -1,8 +1,11 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@denovue/create-vue@~0.2.17": "0.2.17",
+    "jsr:@std/cli@*": "1.0.10",
+    "jsr:@std/cli@^1.0.10": "1.0.10",
+    "jsr:@std/fs@1": "1.0.9",
     "jsr:@std/fs@1.0.9": "1.0.9",
+    "jsr:@std/fs@^1.0.9": "1.0.9",
     "jsr:@std/path@1": "1.0.8",
     "jsr:@std/path@^1.0.8": "1.0.8",
     "npm:@types/eslint@^9.6.1": "9.6.1",
@@ -21,16 +24,8 @@
     "npm:zx@^8.3.0": "8.3.0"
   },
   "jsr": {
-    "@denovue/create-vue@0.2.17": {
-      "integrity": "3eeacbcb4c9e0ea5dc54b723d6f13183aa8538b162982a284c0a44bb31ccec39",
-      "dependencies": [
-        "jsr:@std/fs",
-        "jsr:@std/path@1",
-        "npm:@vue/create-eslint-config",
-        "npm:ejs",
-        "npm:kleur",
-        "npm:prompts"
-      ]
+    "@std/cli@1.0.10": {
+      "integrity": "d047f6f4954a5c2827fe0963765ddd3d8b6cc7b7518682842645b95f571539dc"
     },
     "@std/fs@1.0.9": {
       "integrity": "3eef7e3ed3d317b29432c7dcb3b20122820dbc574263f721cb0248ad91bad890",
@@ -1012,7 +1007,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@denovue/create-vue@~0.2.17",
+      "jsr:@std/cli@^1.0.10",
+      "jsr:@std/fs@^1.0.9",
       "npm:@types/eslint@^9.6.1",
       "npm:@types/node@^22.10.5",
       "npm:@types/prompts@^2.4.9",

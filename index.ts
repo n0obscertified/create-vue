@@ -23,16 +23,16 @@ import { fetchTemplates } from './scripts/fetchTemplates.ts'
 import { generateMappings } from './scripts/generateMappings.ts'
 import cliPackageJson from './deno.json' with { type: "json" }
 
-if(!((cliPackageJson as Record<string, unknown>)?.customMappings ?? false)) {
+if (!((cliPackageJson as Record<string, unknown>)?.customMappings ?? false)) {
   console.log("Generating mappings")
   await generateMappings(['./template'])
 }
 
-function isValidPackageName(projectName:string) {
+function isValidPackageName(projectName: string) {
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(projectName)
 }
 
-function toValidPackageName(projectName:string) {
+function toValidPackageName(projectName: string) {
   return projectName
     .trim()
     .toLowerCase()
@@ -57,15 +57,15 @@ function canSkipEmptying(dir: string) {
   return false
 }
 
-function emptyDir(dir:string) {
+function emptyDir(dir: string) {
   if (!fs.existsSync(dir)) {
     return
   }
 
   postOrderDirectoryTraverse(
     dir,
-    (dir:string) => fs.rmdirSync(dir),
-    (file:string) => fs.unlinkSync(file),
+    (dir: string) => fs.rmdirSync(dir),
+    (file: string) => fs.unlinkSync(file),
   )
 }
 
@@ -157,21 +157,21 @@ async function init() {
       argv.pinia ??
       (argv.tests || argv['with-tests']) ??
       argv.vitest ??
-      argv.vuetify ?? 
+      argv.vuetify ??
       argv.cypress ??
       argv.nightwatch ??
       argv.playwright ??
       argv.eslint ??
       argv['eslint-with-prettier']
     ) === 'boolean'
-  
-  
+
+
   let targetDir = positionals[0]
   const defaultProjectName = !targetDir ? 'vue-project' : targetDir
 
   const forceOverwrite = argv.force
 
-  const language = await getLanguage()
+  const language = getLanguage()
   // console.log('WTH is this', language)
   let result: {
     projectName?: string
@@ -421,16 +421,16 @@ async function init() {
   // work around the esbuild issue that `import.meta.url` cannot be correctly transpiled
   // when bundling for node and the format is cjs
   // const templateRoot = new URL('./template', import.meta.url).pathname
-  let templateRoot: string = './template'; 
-if (import.meta.url.startsWith('https://jsr.io/')) {
-  // When running from JSR
-  console.log("Running from JSR fetching templates", import.meta.url.toString())
-  await fetchTemplates()
-  console.log("Templates fetched")
-} else {
-  // When running locally
-  templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
-}
+  let templateRoot: string = './template';
+  if (import.meta.url.startsWith('https://jsr.io/')) {
+    // When running from JSR
+    console.log("Running from JSR fetching templates", import.meta.url.toString())
+    await fetchTemplates()
+    console.log("Templates fetched")
+  } else {
+    // When running locally
+    templateRoot = path.join(path.dirname(path.fromFileUrl(import.meta.url)), 'template');
+  }
   const callbacks: TemplateCallback[] = []
   const render = function render(templateName: string) {
     const templateDir = path.resolve(templateRoot, templateName)
@@ -557,7 +557,7 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
   // prettier-ignore
   const codeTemplate =
     (needsTypeScript ? 'typescript-' : '') +
-    (needsRouter ? 'router' : 'default') + 
+    (needsRouter ? 'router' : 'default') +
     (needsVuetify ? '-vuetify' : '')
   render(`code/${codeTemplate}`)
 
@@ -566,9 +566,9 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
     render('entry/router-vuetify-and-pinia')
   } else if (needsPinia && needsRouter) {
     render('entry/router-and-pinia')
-  }else if (needsVuetify && needsRouter) {
-    render('entry/router-and-vuetify')  
-  }else if (needsVuetify && needsPinia) {
+  } else if (needsVuetify && needsRouter) {
+    render('entry/router-and-vuetify')
+  } else if (needsVuetify && needsPinia) {
     render('entry/pinia-and-vuetify')
   } else if (needsVuetify) {
     render('entry/vuetify')
@@ -591,7 +591,7 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
   // EJS template rendering
   preOrderDirectoryTraverse(
     root,
-    () => {},
+    () => { },
     (filepath: string) => {
       if (filepath.endsWith('.ejs')) {
         const template = fs.readFileSync(filepath, 'utf-8')
@@ -639,7 +639,7 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
     // `jsconfig.json` is not reused, because we use solution-style `tsconfig`s, which are much more complicated.
     preOrderDirectoryTraverse(
       root,
-      () => {},
+      () => { },
       (filepath: string) => {
         if (filepath.endsWith('.js') && !filepath.endsWith('eslint.config.js')) {
           const tsFilePath = filepath.replace(/\.js$/, '.ts')
@@ -662,7 +662,7 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
     // Remove all the remaining `.ts` files
     preOrderDirectoryTraverse(
       root,
-      () => {},
+      () => { },
       (filepath: string) => {
         if (filepath.endsWith('.ts')) {
           fs.unlinkSync(filepath)
@@ -716,14 +716,20 @@ if (import.meta.url.startsWith('https://jsr.io/')) {
       `  ${bold(green(`cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName}`))}`,
     )
   }
-  console.log(`  ${bold(green(getCommand(packageManager, 'install --allow-scripts' )))}`)
+  console.log(`  ${bold(green(getCommand(packageManager, 'install --allow-scripts')))}`)
   if (needsPrettier) {
     console.log(`  ${bold(green(getCommand(packageManager, 'format')))}`)
   }
-  console.log(`  ${bold(green(getCommand(packageManager, 'dev')))}`)  
+  console.log(`  ${bold(green(getCommand(packageManager, 'dev')))}`)
   console.log()
+  Deno.exit()
 }
 
-init().catch((e) => {
-  console.error(e)
-})
+if (import.meta.main) {
+  try {
+    await init()
+  } catch (error) {
+    console.error("Create-Vue: Task Failed due to: ", error)
+    Deno.exit(1)
+  }
+}

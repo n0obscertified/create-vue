@@ -7,6 +7,7 @@
   "version": "0.2.18",
   "license": "MIT",
   "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.9",
     "@types/eslint": "npm:@types/eslint@^9.6.1",
     "@types/node": "npm:@types/node@^22.10.5",
     "@types/prompts": "npm:@types/prompts@^2.4.9",

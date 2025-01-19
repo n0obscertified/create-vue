@@ -1,53 +1,52 @@
-import * as fs from 'node:fs'
-import { join } from "node:path";
-import {resolve}from 'node:path'
+// import * as fs from 'node:fs'
+// import { join } from "node:path";
+// import {resolve}from 'node:path'
 // import { stringify } from "node:querystring";
-import { locales , type LocaleKey} from '../locales/index.ts'
+import { type LocaleKey, locales } from "../locales/index.ts";
 
 interface LanguageItem {
-  hint?: string
-  message: string
-  invalidMessage?: string
+  hint?: string;
+  message: string;
+  invalidMessage?: string;
   dirForPrompts?: {
-    current: string
-    target: string
-  }
+    current: string;
+    target: string;
+  };
   toggleOptions?: {
-    active: string
-    inactive: string
-  }
+    active: string;
+    inactive: string;
+  };
   selectOptions?: {
-    [key: string]: { title: string; desc?: string }
-  }
+    [key: string]: { title: string; desc?: string };
+  };
 }
 
 interface Language {
-  projectName: LanguageItem
-  shouldOverwrite: LanguageItem
-  packageName: LanguageItem
-  needsTypeScript: LanguageItem
-  needsJsx: LanguageItem
-  needsRouter: LanguageItem
-  needsPinia: LanguageItem
-  needsVitest: LanguageItem
-  needsE2eTesting: LanguageItem
-  needsEslint: LanguageItem
-  needsPrettier: LanguageItem
+  projectName: LanguageItem;
+  shouldOverwrite: LanguageItem;
+  packageName: LanguageItem;
+  needsTypeScript: LanguageItem;
+  needsJsx: LanguageItem;
+  needsRouter: LanguageItem;
+  needsPinia: LanguageItem;
+  needsVitest: LanguageItem;
+  needsE2eTesting: LanguageItem;
+  needsEslint: LanguageItem;
+  needsPrettier: LanguageItem;
   errors: {
-    operationCancelled: string
-  }
+    operationCancelled: string;
+  };
   defaultToggleOptions: {
-    active: string
-    inactive: string
-  }
+    active: string;
+    inactive: string;
+  };
   infos: {
-    scaffolding: string
-    done: string
-  }
+    scaffolding: string;
+    done: string;
+  };
 }
 
 /**
- *
  * This function is used to link obtained locale with correct locale file in order to make locales reusable
  *
  * @param locale the obtained locale
@@ -62,48 +61,47 @@ function linkLocale(locale: string) {
   // The problem here is that the C locale is not a valid language tag for the Intl API.
   // But it is not desirable to throw an error in this case.
   // So we map it to 'en-US'.
-  if (locale === 'C') {
-    return 'en-US'
+  if (locale === "C") {
+    return "en-US";
   }
 
-  let linkedLocale: string = '';
+  let linkedLocale: string = "";
   try {
-    linkedLocale = Intl.getCanonicalLocales(locale)[0]
+    linkedLocale = Intl.getCanonicalLocales(locale)[0];
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    console.log(`${errorMessage}, invalid language tag: "${locale}"\n`)
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.log(`${errorMessage}, invalid language tag: "${locale}"\n`);
   }
   switch (linkedLocale) {
-    case 'zh-TW':
-    case 'zh-HK':
-    case 'zh-MO':
-      linkedLocale = 'zh-Hant'
-      break
-    case 'zh-CN':
-    case 'zh-SG':
-      linkedLocale = 'zh-Hans'
-      break
+    case "zh-TW":
+    case "zh-HK":
+    case "zh-MO":
+      linkedLocale = "zh-Hant";
+      break;
+    case "zh-CN":
+    case "zh-SG":
+      linkedLocale = "zh-Hans";
+      break;
     default:
-      linkedLocale = locale
+      linkedLocale = locale;
   }
 
-  return linkedLocale
+  return linkedLocale;
 }
 
 function getLocale() {
-  const shellLocale =
-    Deno.env.get('LC_ALL') || // POSIX locale environment variables
-    Deno.env.get('LC_MESSAGES') ||
-    Deno.env.get('LANG') ||
+  const shellLocale = Deno.env.get("LC_ALL") || // POSIX locale environment variables
+    Deno.env.get("LC_MESSAGES") ||
+    Deno.env.get("LANG") ||
     Intl.DateTimeFormat().resolvedOptions().locale || // Built-in ECMA-402 support
-    'en-US' // Default fallback
+    "en-US"; // Default fallback
 
-  return linkLocale(shellLocale.split('.')[0].replace('_', '-'))
+  return linkLocale(shellLocale.split(".")[0].replace("_", "-"));
 }
 
 export default function getLanguage() {
-  const locale = getLocale()
-  console.log('locale', locale)
+  const locale = getLocale();
+  console.log("locale", locale);
   // Note here __dirname would not be transpiled,
   // so it refers to the __dirname of the file `<repositoryRoot>/outfile.cjs`
   // TODO: use glob import once https://github.com/evanw/esbuild/issues/3320 is fixed
@@ -112,11 +110,11 @@ export default function getLanguage() {
   // const localesRoot = join(dirName,'..','/locales')
   // console.log("the file name",localesRoot)
   // const languageFilePath = join(localesRoot, `${locale}.json`)
-  const doesLanguageExist =  locales[locale as LocaleKey] //fs.existsSync(languageFilePath)
+  const doesLanguageExist = locales[locale as LocaleKey]; //fs.existsSync(languageFilePath)
 
   const _import = doesLanguageExist
     ? locales[locale as LocaleKey]
-    : locales['en-US']
+    : locales["en-US"];
 
-  return _import
+  return _import;
 }
